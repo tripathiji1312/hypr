@@ -1,49 +1,30 @@
 #!/bin/bash
 
-# This script will randomly select a wallpaper from the specified directory
-# and set it using hyprpaper. It will also unload the previous wallpaper
-# to free up memory.
-
-# Directory containing your wallpapers
+# --- Configuration ---
 WALLPAPER_DIR="/home/tripathiji/.config/hypr/wallpaper"
+SLEEP_INTERVAL=300
 
-# Time in seconds to wait before changing the wallpaper
-SLEEP_INTERVAL=300 # 300 seconds = 5 minutes
+# --- Script Logic ---
 
-# The currently set wallpaper, initially empty
-CURRENT_WALLPAPER=""
-
-# Start hyprpaper if it's not already running
-# This is a safety measure
-if ! pgrep -x hyprpaper > /dev/null; then
-    hyprpaper &
-    sleep 1 # Give it a moment to start
+# Check if swww-daemon is running. If not, start it.
+if ! pgrep -x swww-daemon > /dev/null; then
+    swww-daemon &
+    sleep 1
 fi
 
 while true; do
-    # Find a random wallpaper file in the directory
-    # -type f ensures we only get files
-    # shuf -n 1 picks one random line
     NEW_WALLPAPER=$(find "$WALLPAPER_DIR" -type f | shuf -n 1)
 
-    # Check if a new wallpaper was found and it's different from the current one
-    if [ -n "$NEW_WALLPAPER" ] && [ "$NEW_WALLPAPER" != "$CURRENT_WALLPAPER" ]; then
-        # Tell hyprpaper to preload the new wallpaper
-        hyprctl hyprpaper preload "$NEW_WALLPAPER"
+    if [ -n "$NEW_WALLPAPER" ]; then
+        # Set wallpaper with swww for smooth transitions
+        swww img "$NEW_WALLPAPER" --transition-type any --transition-duration 1.5
 
-        # Tell hyprpaper to set the new wallpaper
-        # The comma at the beginning means it applies to all monitors
-        hyprctl hyprpaper wallpaper ",$NEW_WALLPAPER"
+        # Generate and apply color scheme with Pywal
+        wal -i "$NEW_WALLPAPER" -q -n
 
-        # If there was a previously set wallpaper, tell hyprpaper to unload it
-        if [ -n "$CURRENT_WALLPAPER" ]; then
-            hyprctl hyprpaper unload "$CURRENT_WALLPAPER"
-        fi
-
-        # Update the current wallpaper variable
-        CURRENT_WALLPAPER="$NEW_WALLPAPER"
+        # Reload themed applications
+        ~/.config/hypr/scripts/pywal_reload.sh
     fi
 
-    # Wait for the specified interval before the next change
     sleep $SLEEP_INTERVAL
 done
