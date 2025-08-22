@@ -1,31 +1,59 @@
 #!/bin/bash
 
-# This script reloads applications to apply the new Pywal theme.
+# --- The Final, Forceful Pywal Reload Script ---
+# This version includes a more robust Waybar reload and a forceful
+# restart of the GTK portal to ensure themes are applied.
 
-# Source the generated colors
-# This is necessary for scripts that need to access the colors directly
+echo "--- Pywal Reload Script Starting ---"
+
+if ! [ -e "${HOME}/.cache/wal/colors.sh" ]; then
+    echo "[FATAL] Pywal color file not found. Exiting."
+    exit 1
+fi
 source "${HOME}/.cache/wal/colors.sh"
 
-# Reload Waybar
-# Kill and restart Waybar to apply the new theme from its CSS
-pkill waybar
-waybar &
+# --- 1. Reload Core Applications ---
+echo "INFO: Reloading Kitty terminal..."
+ln -sf "${HOME}/.cache/wal/colors-kitty.conf" "${HOME}/.config/kitty/theme.conf"
+if pgrep -x kitty > /dev/null; then
+    killall -SIGUSR1 kitty
+fi
 
-# Reload Dunst
-# Kill and restart Dunst to apply the new theme from its config
+echo "INFO: Reloading Dunst..."
 pkill dunst
+sleep 0.3  # Critical delay to ensure color variables are fully loaded
 dunst &
 
-# Reload Kitty Terminal
-# In your kitty.conf, you must have the line: include ./theme.conf
-# This command creates a symlink to the pywal-generated theme,
-# and the SIGUSR1 signal tells Kitty to reload its config.
-ln -sf "${HOME}/.cache/wal/colors-kitty.conf" "${HOME}/.config/kitty/theme.conf"
-killall -SIGUSR1 kitty
+# --- 2. Forceful GTK Theme Application ---
+echo "INFO: Attempting to generate and apply GTK theme..."
+THEME_NAME="pywal-oomox-dark"
+BASE_THEME_PATH="$HOME/.config/oomox/colors/pywal-base"
 
-# Reload Wofi's CSS
-# This ensures Wofi uses the new theme on its next launch
-killall -SIGUSR1 wofi
-# Optional: Reload GTK theme (if you use nwg-look or similar)
-# gsettings set org.gnome.desktop.interface gtk-theme "YourThemeName"
-# gsettings set org.gnome.desktop.interface icon-theme "YourIconThemeName"
+# Run the theme generation
+oomox-cli -o "$THEME_NAME" "$BASE_THEME_PATH"
+if [ $? -eq 0 ]; then
+    echo "[OK] Oomox theme generated successfully."
+
+    # Apply the theme setting
+    gsettings set org.gnome.desktop.interface gtk-theme "$THEME_NAME"
+    echo "[OK] Gsettings theme key has been set."
+
+    # THE CRITICAL FIX: Forcefully restart the GTK portal
+    echo "INFO: Forcefully restarting GTK portal service..."
+    systemctl --user restart xdg-desktop-portal-gtk.service &
+    echo "[OK] GTK portal has been restarted."
+else
+    echo "------------------------------------------------------------"
+    echo "[ERROR] GTK theme generation with oomox-cli FAILED."
+    echo "------------------------------------------------------------"
+fi
+
+# --- 3. Reload Waybar (Last and most robustly) ---
+echo "INFO: Reloading Waybar..."
+pkill waybar
+# A small delay can help Waybar restart correctly after other processes.
+sleep 0.2
+# Run Waybar in the background and disown it from the script's process.
+waybar & disown
+
+echo "--- Pywal Reload Script Finished ---"
