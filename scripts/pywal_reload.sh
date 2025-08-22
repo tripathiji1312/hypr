@@ -1,59 +1,50 @@
 #!/bin/bash
 
-# --- The Final, Forceful Pywal Reload Script ---
-# This version includes a more robust Waybar reload and a forceful
-# restart of the GTK portal to ensure themes are applied.
+# --- Pywal Reload Script (Definitive Version for Wayland + XWayland) ---
 
-echo "--- Pywal Reload Script Starting ---"
+echo "--- Starting Full Theme Reload ---"
 
-if ! [ -e "${HOME}/.cache/wal/colors.sh" ]; then
-    echo "[FATAL] Pywal color file not found. Exiting."
+if [ ! -f "${HOME}/.cache/wal/colors.sh" ]; then
+    echo "[ERROR] Pywal color cache not found. Exiting."
     exit 1
 fi
 source "${HOME}/.cache/wal/colors.sh"
 
 # --- 1. Reload Core Applications ---
-echo "INFO: Reloading Kitty terminal..."
-ln -sf "${HOME}/.cache/wal/colors-kitty.conf" "${HOME}/.config/kitty/theme.conf"
+pkill dunst && dunst &
+pkill waybar && waybar & disown
 if pgrep -x kitty > /dev/null; then
     killall -SIGUSR1 kitty
 fi
 
-echo "INFO: Reloading Dunst..."
-pkill dunst
-sleep 0.3  # Critical delay to ensure color variables are fully loaded
-dunst &
+# --- 2. Apply Theme for Native Wayland Apps ---
+echo "INFO: Applying theme for native Wayland applications..."
+THEME_NAME="wal"
+gsettings set org.gnome.desktop.interface gtk-theme "$THEME_NAME"
+gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 
-# --- 2. Forceful GTK Theme Application ---
-echo "INFO: Attempting to generate and apply GTK theme..."
-THEME_NAME="pywal-oomox-dark"
-BASE_THEME_PATH="$HOME/.config/oomox/colors/pywal-base"
-
-# Run the theme generation
-oomox-cli -o "$THEME_NAME" "$BASE_THEME_PATH"
-if [ $? -eq 0 ]; then
-    echo "[OK] Oomox theme generated successfully."
-
-    # Apply the theme setting
-    gsettings set org.gnome.desktop.interface gtk-theme "$THEME_NAME"
-    echo "[OK] Gsettings theme key has been set."
-
-    # THE CRITICAL FIX: Forcefully restart the GTK portal
-    echo "INFO: Forcefully restarting GTK portal service..."
-    systemctl --user restart xdg-desktop-portal-gtk.service &
-    echo "[OK] GTK portal has been restarted."
-else
-    echo "------------------------------------------------------------"
-    echo "[ERROR] GTK theme generation with oomox-cli FAILED."
-    echo "------------------------------------------------------------"
+# --- 3. Apply Theme for XWayland Apps ---
+echo "INFO: Applying theme for XWayland applications..."
+XSETTINGS_CONFIG="${HOME}/.config/xsettingsd/xsettingsd.conf"
+if [ -f "$XSETTINGS_CONFIG" ]; then
+    # Use sed to replace the theme name in the config file
+    sed -i "s/Gtk\/ThemeName .*/Gtk\/ThemeName \"$THEME_NAME\"/" "$XSETTINGS_CONFIG"
+    # Signal the running xsettingsd daemon to reload its configuration
+    pkill -HUP xsettingsd
 fi
 
-# --- 3. Reload Waybar (Last and most robustly) ---
-echo "INFO: Reloading Waybar..."
-pkill waybar
-# A small delay can help Waybar restart correctly after other processes.
-sleep 0.2
-# Run Waybar in the background and disown it from the script's process.
-waybar & disown
+# --- 4. Restart XDG Portals ---
+# This forces them to re-read the configuration from both sources
+echo "INFO: Restarting XDG portals..."
+systemctl --user restart xdg-desktop-portal-gtk.service
+systemctl --user restart xdg-desktop-portal.service
 
-echo "--- Pywal Reload Script Finished ---"
+# --- 5. Refresh Wlogout ---
+if [ -f "${HOME}/.config/wlogout/style.css.tpl" ]; then
+    sed -e "s/{background}/${background}/g" -e "s/{foreground}/${foreground}/g" \
+        -e "s/{color1}/${color1}/g" -e "s/{color2}/${color2}/g" \
+        -e "s/{color3}/${color3}/g" -e "s/{color4}/${color4}/g" \
+        "${HOME}/.config/wlogout/style.css.tpl" > "${HOME}/.config/wlogout/style.css"
+fi
+
+echo "--- Theme Reload Finished Successfully ---"
