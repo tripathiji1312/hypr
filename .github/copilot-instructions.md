@@ -296,52 +296,72 @@ hyprctl clients -j | jq '.[] | select(.title | test("Picture-in-Picture"))'
 - `opacity 1.0 override` - Ensures solid, crisp rendering
 - `keepaspectratio` - Prevents squishing of video content
 
-### Critical Issue: Wallpaper Bleeding Through Popups/Context Menus ⚠️ NEW
+### Critical Issue: Wallpaper Bleeding Through Popups/Context Menus ⚠️ **SOLVED**
 
 **Problem**: Right-click context menus and app popups (especially Google Meet) show wallpaper bleeding through/around them. Looks forced, ugly, and unpleasant.
 
-**Root Cause**: Popups are **semi-transparent by default**, allowing the wallpaper to show through the background.
+**Root Cause Analysis** (Solved by comparing `main` vs `v2.2` branches):
 
-**Solution**: Created dedicated `hyprland/popup-fix.conf` file with **forced full opacity** on all popups.
+1. **`GTK_CSD=0` environment variable** → Forces GTK to use server-side decorations instead of client-side → Creates **BLACK BORDERS** around all popups/menus
+2. **Aggressive window rules** on `title:^$` → Disabled blur/shadows/borders on ALL unnamed windows → Broke popup rendering
+3. **Over-configured blur settings** → `ignore_opacity`, `popups = false` etc. caused conflicts
 
-**Key Fix Rules**:
+**Solution - The Minimal Working Config**:
+
 ```conf
-# Force FULL OPACITY on all floating popups/menus
-windowrulev2 = opacity 1.0 override 1.0 override, title:^$, floating:1
-windowrulev2 = opaque, title:^$, floating:1  # No transparency whatsoever
-windowrulev2 = noblur, title:^$, floating:1
-windowrulev2 = noshadow, title:^$, floating:1
-windowrulev2 = noanim, title:^$, floating:1
-windowrulev2 = rounding 0, title:^$, floating:1  # Clean edges
+# hyprland.conf - CRITICAL: DO NOT set GTK_CSD=0!
+env = GTK_THEME,adw-gtk3-dark
+# env = GTK_CSD,0  # ❌ NEVER SET THIS - causes black borders!
 
-# Browser-specific (Vivaldi, Brave, Chrome, Zen)
-windowrulev2 = opacity 1.0 override 1.0 override, class:^(vivaldi-stable)$, title:^$
-windowrulev2 = opaque, class:^(vivaldi-stable)$, title:^$
-# ... (same for all browsers)
+# decorations.conf - Keep it simple
+blur {
+    enabled = true
+    new_optimizations = true
+    xray = true  # ✅ CRITICAL: Prevents wallpaper bleed
+    size = 6
+    passes = 2
+    vibrancy = 0.1696
+    # DON'T add: ignore_opacity, popups, popups_ignorealpha
+}
 
-# Google Meet popups specifically
-windowrulev2 = opacity 1.0 override 1.0 override, class:^(vivaldi-stable)$, title:^(.*meet.google.com.*)$, floating:1
-windowrulev2 = opaque, class:^(vivaldi-stable)$, title:^(.*meet.google.com.*)$, floating:1
+shadow {
+    enabled = true  # ✅ Native shadows are good
+    range = 20
+    render_power = 4
+}
+
+# window.conf - NO aggressive popup rules needed!
+# ❌ DON'T add: noborder, noblur, noshadow on title:^$
+# Browser popups are subsurfaces - they render correctly by default
 ```
 
-**Testing**:
+**Google Meet PiP Wallpaper Bleed** (Original Issue):
+
+Created dedicated `hyprland/meet-pip-fix.conf`:
+```conf
+# Target ONLY Google Meet PiP windows (title pattern: "Meet - xxx-xxxx-xxx")
+windowrulev2 = opacity 1.0 override, class:^(vivaldi-stable)$, title:^(Meet - [a-z]{3}-[a-z]{4}-[a-z]{3})$
+windowrulev2 = noshadow, class:^(vivaldi-stable)$, title:^(Meet - [a-z]{3}-[a-z]{4}-[a-z]{3})$
+# Repeat for brave-browser, Google-chrome, firefox, zen
+```
+
+**Testing Commands**:
 ```bash
-# 1. Reload Hyprland
-hyprctl reload
+# Compare configs between branches
+git diff main v2.2 hyprland.conf
+git diff main v2.2 hyprland/decorations.conf
 
-# 2. Right-click anywhere - menu should be SOLID (no wallpaper bleed)
-
-# 3. Open Google Meet - popups should be SOLID
-
-# 4. If still issues, identify the window:
-hyprctl clients | grep -A10 "class\|title"
+# Check what's causing issues
+env | grep GTK_CSD  # Should be empty!
+hyprctl getoption decoration:blur:xray  # Should be: int: 1
 ```
 
-**Why `opacity 1.0 override 1.0 override`?**
-- First `1.0 override` - Active window opacity
-- Second `1.0 override` - Inactive window opacity  
-- `override` - Ignores any other opacity rules (forces exact value)
-- `opaque` - Additional flag to ensure NO transparency
+**Key Lessons**:
+- ✅ `xray = true` is CRITICAL for preventing wallpaper bleed
+- ❌ `GTK_CSD=0` causes black borders on all GTK popups
+- ❌ Aggressive `title:^$` rules break browser popup rendering
+- ✅ Browser popups/menus work perfectly with **default compositor settings**
+- ✅ Only Google Meet PiP needs targeted opacity fixes
 
 ### Issue: GTK Portal Rendering Glitches
 
