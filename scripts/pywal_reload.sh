@@ -28,8 +28,8 @@ systemctl --user restart xdg-desktop-portal.service
 
 # --- 2. Reload Apps to Apply New Pywal Colors ---
 # These apps read the Pywal cache files, which were just updated.
-pkill waybar && waybar & disown
-pkill dunst && dunst &
+pkill quickshell && quickshell & disown
+# pkill dunst && dunst &
 if pgrep -x kitty > /dev/null; then
     killall -SIGUSR1 kitty
 fi
