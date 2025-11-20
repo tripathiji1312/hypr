@@ -9,11 +9,15 @@ echo "--- Fixing GTK theme and reloading Pywal-aware apps ---"
 # --- 1. Define and Apply the Stable GTK Theme ---
 STABLE_GTK_THEME="adw-gtk3-dark"
 ICON_THEME="Papirus-Dark" # Or your preferred icon theme
+CURSOR_THEME="Bibata-Modern-Ice"
+CURSOR_SIZE="24"
 
 # Forcefully set the theme for Wayland/GTK4 apps
 gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 gsettings set org.gnome.desktop.interface gtk-theme "$STABLE_GTK_THEME"
 gsettings set org.gnome.desktop.interface icon-theme "$ICON_THEME"
+gsettings set org.gnome.desktop.interface cursor-theme "$CURSOR_THEME"
+gsettings set org.gnome.desktop.interface cursor-size "$CURSOR_SIZE"
 
 # Forcefully set the theme for XWayland apps
 XSETTINGS_CONFIG="${HOME}/.config/xsettingsd/xsettingsd.conf"
