@@ -1,0 +1,22 @@
+{
+    "branch": "v0.53.0",
+    "commit": "ea444c35bb23b6e34505ab6753e069de7801cc25",
+    "version": "0.53.0",
+    "dirty": false,
+    "commit_message": "version: bump to 0.53.0",
+    "commit_date": "Mon Dec 29 15:21:36 2025",
+    "tag": "v0.53.0",
+    "commits": "6756",
+    "buildAquamarine": "0.10.0",
+    "buildHyprlang": "0.6.7",
+    "buildHyprutils": "0.11.0",
+    "buildHyprcursor": "0.1.13",
+    "buildHyprgraphics": "0.5.0",
+    "systemAquamarine": "0.10.0",
+    "systemHyprlang": "0.6.7",
+    "systemHyprutils": "0.11.0",
+    "systemHyprcursor": "0.1.13",
+    "systemHyprgraphics": "0.5.0",
+    "abiHash": "ea444c35bb23b6e34505ab6753e069de7801cc25_aq_0.10_hu_0.11_hg_0.5_hc_0.1_hlg_0.6",
+    "flags": []
+}
