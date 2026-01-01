@@ -2,7 +2,7 @@
 
 ## Architecture Overview
 
-This is a **modular Hyprland configuration** for user `tripathiji` running on Arch Linux (v0.51.1). The config prioritizes minimalism, aesthetic polish, and functional reliability.
+This is a **modular Hyprland configuration** for user `tripathiji` running on Arch Linux (v0.53). The config prioritizes minimalism, aesthetic polish, and functional reliability.
 
 ### Core Structure
 - **Main Entry**: `hyprland.conf` - Sets monitors, environment, sources all modules
@@ -29,13 +29,6 @@ Rules are **defense-in-depth** to prevent buggy floating behavior:
 - **Never use `stayfocused`** on popups/menus (blocks main window interaction)
 - PiP rules: `float, pin, noborder, size 25%, move 72% 72%`
 
-Example pattern for browser PiP:
-```conf
-windowrulev2 = float, class:^(vivaldi-stable)$, title:^(Picture-in-Picture)$
-windowrulev2 = pin, class:^(vivaldi-stable)$, title:^(Picture-in-Picture)$
-windowrulev2 = size 25%, class:^(vivaldi-stable)$, title:^(Picture-in-Picture)$
-windowrulev2 = move 73% 72%, class:^(vivaldi-stable)$, title:^(Picture-in-Picture)$
-```
 
 #### 3. **Scratchpad Workspaces** (`special:` workspaces)
 - `special:term` - Scratchpad terminal (auto-launched on boot)
@@ -123,7 +116,7 @@ hyprctl reload  # Full reload
 
 ---
 
-## Official Hyprland Documentation Reference (v0.51.1)
+## Official Hyprland Documentation Reference (v0.53+)
 
 **Primary Source**: [Hyprland Wiki](https://wiki.hyprland.org/) - Always verify syntax and features here.
 
@@ -135,9 +128,9 @@ hyprctl reload  # Full reload
 - **[Keywords](https://wiki.hyprland.org/Configuring/Keywords/)** - `exec`, `source`, `env`, gestures, per-device configs
 
 #### Window & Workspace Management
-- **[Window Rules](https://wiki.hyprland.org/Configuring/Window-Rules/)** - `windowrulev2` syntax, opacity, floating, PiP
-  - Critical: Use `class:^(regex)$` + `title:^(regex)$` for precision
-  - Layer rules for blur/effects on bars/notifications
+- **[Window Rules](https://wiki.hyprland.org/Configuring/Window-Rules/)** - `windowrule` syntax (`match:*` + effects), opacity, floating, PiP
+  - Critical: Prefer precise `match:class` + `match:title` rules
+  - Regex engine is **RE2** (no lookbehinds/lookaheads); use `negative:` for negation
 - **[Workspace Rules](https://wiki.hyprland.org/Configuring/Workspace-Rules/)** - Per-workspace gaps, rounding, persistent workspaces
 - **[Monitors](https://wiki.hyprland.org/Configuring/Monitors/)** - Resolution, position, scale, VRR, transform
 
@@ -165,13 +158,13 @@ hyprctl reload  # Full reload
 
 ### Quick Syntax References
 
-**Window Rule Matching** (from Wiki):
+**Window Rule Matching** (v0.53+):
 ```conf
-windowrulev2 = RULE, class:^(regex)$, title:^(regex)$
-windowrulev2 = RULE, initialClass:^(regex)$  # Match by launch class
-windowrulev2 = RULE, floating:1              # Only floating windows
-windowrulev2 = RULE, fullscreen:1            # Only fullscreen windows
-windowrulev2 = RULE, workspace:2             # Only on workspace 2
+windowrule = match:class ^(regex)$, match:title ^(regex)$, float on
+windowrule = match:initialClass ^(regex)$, float on
+windowrule = match:float true, no_shadow on
+windowrule = match:fullscreen true, no_dim on
+windowrule = match:workspace 2, opacity 1.0 override
 ```
 
 **Animation Tree** (from Wiki):
@@ -252,29 +245,29 @@ env = XDG_CURRENT_DESKTOP,Hyprland
 ```conf
 # === OPTIMIZED PiP RULES (Browser-Agnostic) ===
 # Disable animations for smoother experience
-windowrulev2 = noanim, title:^(Picture-in-Picture)$
-windowrulev2 = float, title:^(Picture-in-Picture)$
-windowrulev2 = pin, title:^(Picture-in-Picture)$
-windowrulev2 = noborder, title:^(Picture-in-Picture)$
-windowrulev2 = noshadow, title:^(Picture-in-Picture)$
-windowrulev2 = noblur, title:^(Picture-in-Picture)$
-windowrulev2 = opacity 1.0 override, title:^(Picture-in-Picture)$
-windowrulev2 = size 25% 25%, title:^(Picture-in-Picture)$
-windowrulev2 = move 74% 73%, title:^(Picture-in-Picture)$  # Bottom-right corner
-windowrulev2 = keepaspectratio, title:^(Picture-in-Picture)$
+windowrule = match:title ^(Picture-in-Picture)$, no_anim on
+windowrule = match:title ^(Picture-in-Picture)$, float on
+windowrule = match:title ^(Picture-in-Picture)$, pin on
+windowrule = match:title ^(Picture-in-Picture)$, border_size 0
+windowrule = match:title ^(Picture-in-Picture)$, no_shadow on
+windowrule = match:title ^(Picture-in-Picture)$, no_blur on
+windowrule = match:title ^(Picture-in-Picture)$, opacity 1.0 override
+windowrule = match:title ^(Picture-in-Picture)$, size (monitor_w*0.25) (monitor_h*0.25)
+windowrule = match:title ^(Picture-in-Picture)$, move (monitor_w*0.74) (monitor_h*0.73)  # Bottom-right corner
+windowrule = match:title ^(Picture-in-Picture)$, keep_aspect_ratio on
 
 # === OPTIMIZED POPUP RULES ===
 # Fix for dropdown menus, context menus, tooltips
-windowrulev2 = noanim, floating:1, title:^$
-windowrulev2 = noborder, floating:1, title:^$
-windowrulev2 = noblur, floating:1, title:^$
-windowrulev2 = noshadow, floating:1, title:^$
-windowrulev2 = opacity 1.0 override, floating:1, title:^$
+windowrule = match:float true, match:title ^$, no_anim on
+windowrule = match:float true, match:title ^$, border_size 0
+windowrule = match:float true, match:title ^$, no_blur on
+windowrule = match:float true, match:title ^$, no_shadow on
+windowrule = match:float true, match:title ^$, opacity 1.0 override
 
 # Browser-specific popup optimization
-windowrulev2 = noanim, class:^(vivaldi-stable|brave-browser|Google-chrome|firefox)$, title:^$
-windowrulev2 = noblur, class:^(vivaldi-stable|brave-browser|Google-chrome|firefox)$, title:^$
-windowrulev2 = noshadow, class:^(vivaldi-stable|brave-browser|Google-chrome|firefox)$, title:^$
+windowrule = match:class ^(vivaldi-stable|brave-browser|Google-chrome|firefox)$, match:title ^$, no_anim on
+windowrule = match:class ^(vivaldi-stable|brave-browser|Google-chrome|firefox)$, match:title ^$, no_blur on
+windowrule = match:class ^(vivaldi-stable|brave-browser|Google-chrome|firefox)$, match:title ^$, no_shadow on
 ```
 
 **Testing Commands**:
@@ -340,8 +333,8 @@ shadow {
 Created dedicated `hyprland/meet-pip-fix.conf`:
 ```conf
 # Target ONLY Google Meet PiP windows (title pattern: "Meet - xxx-xxxx-xxx")
-windowrulev2 = opacity 1.0 override, class:^(vivaldi-stable)$, title:^(Meet - [a-z]{3}-[a-z]{4}-[a-z]{3})$
-windowrulev2 = noshadow, class:^(vivaldi-stable)$, title:^(Meet - [a-z]{3}-[a-z]{4}-[a-z]{3})$
+windowrule = match:class ^(vivaldi-stable)$, match:title ^(Meet - [a-z]{3}-[a-z]{4}-[a-z]{3})$, opacity 1.0 override
+windowrule = match:class ^(vivaldi-stable)$, match:title ^(Meet - [a-z]{3}-[a-z]{4}-[a-z]{3})$, no_shadow on
 # Repeat for brave-browser, Google-chrome, firefox, zen
 ```
 
@@ -369,10 +362,10 @@ hyprctl getoption decoration:blur:xray  # Should be: int: 1
 
 **Solution**:
 ```conf
-windowrulev2 = noblur, class:^(xdg-desktop-portal-gtk)$
-windowrulev2 = noshadow, class:^(xdg-desktop-portal-gtk)$
-windowrulev2 = opaque, class:^(xdg-desktop-portal-gtk)$
-windowrulev2 = noborder, class:^(xdg-desktop-portal-gtk)$
+windowrule = match:class ^(xdg-desktop-portal-gtk)$, no_blur on
+windowrule = match:class ^(xdg-desktop-portal-gtk)$, no_shadow on
+windowrule = match:class ^(xdg-desktop-portal-gtk)$, opaque on
+windowrule = match:class ^(xdg-desktop-portal-gtk)$, border_size 0
 ```
 
 ### Issue: Theme Changes Breaking Apps
@@ -525,8 +518,8 @@ decoration {
 
 Add to `hyprland/animation.conf`:
 ```conf
-# Disable animations for tiny windows (popups/tooltips)
-windowrulev2 = animation none, floating:1, size:[0-300] [0-300]
+# Disable animations for PiP windows (targeted)
+windowrule = match:title ^(Picture-in-Picture)$, no_anim on
 ```
 
 ### For Low-End Systems
@@ -1380,19 +1373,19 @@ Layer surfaces are not windows. These are, for example: wallpapers, notification
 
 If you want to blur them, use a layer rule:
 
-layerrule = blur, NAMESPACE
+layerrule = match:namespace NAMESPACE, blur on
 # or
-layerrule = blur, address:0x<ADDRESS>
+layerrule = match:address address:0x<ADDRESS>, blur on
 
 You can get the namespace / address from hyprctl layers.
 
 To remove a layer rule (useful in dynamic situations) use:
 
-layerrule = unset, <whatever you used before>
+layerrule = match:namespace <whatever you used before>, unset
 
 For example:
 
-layerrule = unset, NAMESPACE
+layerrule = match:namespace NAMESPACE, unset
 
 Setting the environment 
 A new environment cannot be passed to already running processes. If you change / add / remove an env = entry when Hyprland is running, only newly spawned apps will pick up the changes.
