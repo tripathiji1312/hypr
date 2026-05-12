@@ -121,7 +121,7 @@ This configuration follows three core principles:
    ```bash
    # Arch Linux
    sudo pacman -S hyprland kitty thunar waybar dunst wofi cliphist \
-                  grim slurp swww python-pywal jq socat playerctl
+                  grim slurp hyprpaper python-pywal jq socat playerctl
    ```
 
 3. **Apply theme on startup**:

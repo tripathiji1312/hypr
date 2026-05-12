@@ -154,7 +154,7 @@ hyprctl reload  # Full reload
 - **[xdg-desktop-portal-hyprland](https://wiki.hyprland.org/Hypr-Ecosystem/xdg-desktop-portal-hyprland/)** - Screen sharing, file pickers
 - **[hypridle](https://wiki.hyprland.org/Hypr-Ecosystem/hypridle/)** - Idle management, DPMS, lock triggers
 - **[hyprlock](https://wiki.hyprland.org/Hypr-Ecosystem/hyprlock/)** - Screen locker configuration
-- **[hyprpaper](https://wiki.hyprland.org/Hypr-Ecosystem/hyprpaper/)** - Wallpaper daemon (note: we use `swww` instead)
+- **[hyprpaper](https://wiki.hyprland.org/Hypr-Ecosystem/hyprpaper/)** - Wallpaper daemon (current wallpaper backend)
 
 ### Quick Syntax References
 
@@ -435,7 +435,7 @@ hyprctl dispatch togglespecialworkspace term
 
 **Workflow**:
 1. Find random wallpaper from `~/.config/hypr/wallpaper/`
-2. Set wallpaper via `swww` (smooth transition)
+2. Set wallpaper via `hyprpaper` (reliable startup/application path)
 3. Generate Pywal colors from wallpaper
 4. **Immediately call `pywal_reload.sh`** to fix GTK theme
 
@@ -444,7 +444,7 @@ hyprctl dispatch togglespecialworkspace term
 **When**: `exec-once` in `autostart.conf`
 
 **Workflow**:
-1. Start `swww-daemon` if not running
+1. Start `hyprpaper` if not running
 2. Pick random wallpaper
 3. Generate Pywal colors
 4. Call `pywal_reload.sh` to stabilize GTK

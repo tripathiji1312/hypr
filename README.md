@@ -58,7 +58,7 @@ git clone https://github.com/tripathiji1312/hypr.git ~/.config/hypr
 
 # Install dependencies (Arch Linux)
 sudo pacman -S hyprland kitty thunar waybar dunst wofi cliphist \
-               grim slurp swww python-pywal jq socat playerctl
+               grim slurp hyprpaper python-pywal jq socat playerctl
 
 # Apply theme
 ~/.config/hypr/scripts/startup_theme.sh
@@ -150,7 +150,7 @@ tail -f ~/.config/hypr/logs/*.log
 - **Notifications**: Dunst (Pywal themed)
 - **Launcher**: Wofi
 - **Clipboard**: cliphist + wofi
-- **Wallpaper**: swww (smooth transitions)
+- **Wallpaper**: hyprpaper (reliable startup wallpaper)
 
 ---
 

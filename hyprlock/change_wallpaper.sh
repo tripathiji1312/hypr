@@ -1,16 +1,16 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-# Only works if you use SWWW for your wallpapers
-
-SWWW_DIR="$HOME/.cache/swww/"
+# Read the wallpaper chosen by the shared wallpaper helper.
+CACHE_FILE="$HOME/.cache/hypr/last_wallpaper"
 HYPRLOCK="$HOME/.config/hypr/hyprlock.conf"
 
-# Get a Monitor Cache File
-FIRST_FILE=$(find "$SWWW_DIR" -type f | head -n 1)
+# Check if a wallpaper has been recorded
+if [[ -f "$CACHE_FILE" ]]; then
+    WALLPAPER="$(<"$CACHE_FILE")"
+fi
 
-# Check if SWWW file exists
-if [ -n "$FIRST_FILE" ] && [ -f "$FIRST_FILE" ]; then
-    WALLPAPER=$(sed -n '2p' "$FIRST_FILE")
+if [[ -n "${WALLPAPER:-}" && -f "$WALLPAPER" ]]; then
 
     sed -i "s|^\(\$wallpaper[[:space:]]*=[[:space:]]*\).*|\1$WALLPAPER # (screenshot or /path/to/your/wallpaper.jpg)|" "$HYPRLOCK"
     echo "Wallpaper path updated to $WALLPAPER"
