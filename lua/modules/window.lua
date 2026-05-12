@@ -1,3 +1,8 @@
+local M = {}
+
+M.name = "window"
+
+local raw = [=[
 # #######################################################################################
 # #                      MODERN & CLEAN HYPRLAND WINDOW RULES (v0.51.1)                #
 # #######################################################################################
@@ -255,3 +260,11 @@ layerrule = match:namespace quickshell-bar, ignore_alpha 0.6
 layerrule = match:namespace quickshell-notifications, ignore_alpha 0.6
 # Generic fallback for any QuickShell layer
 layerrule = match:namespace ^(quickshell.*)$, no_anim on
+]=]
+
+M.lines = {}
+for line in (raw .. "\n"):gmatch("(.-)\n") do
+    table.insert(M.lines, line)
+end
+
+return M

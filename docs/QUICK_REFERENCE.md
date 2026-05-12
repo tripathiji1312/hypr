@@ -1,5 +1,35 @@
 # Quick Reference - New Features
 
+## 🆕 Hyprland 0.54 Additions
+
+### Scrolling Layout
+
+- `Super + Ctrl + .` → Toggle between `dwindle` and `scrolling`
+- `Super + Alt + , / .` → Move scrolling layout left / right by column
+- `Super + Alt + Shift + , / .` → Swap current column left / right
+- `Super + Alt + - / =` → Resize current column using configured widths
+- `Super + Alt + /` → Toggle fit behavior
+- `Super + Ctrl + P` → Promote active window into its own column
+- `Super + Ctrl + G` → Stack active window into the column on the left
+- `Super + Ctrl + Shift + G` → Stack active window into the column on the right
+- `Super + Alt + Shift + Return` → Promote current window to its own column
+- `Super + Ctrl + Alt + /` → Fit to active column
+- `Super + Ctrl + Alt + \` → Fit all columns
+
+### Cursor Zoom
+
+- Four-finger pinch in/out → Cursor zoom gesture
+- `Super + Ctrl + =` → Zoom in
+- `Super + Ctrl + -` → Zoom out
+- `Super + Ctrl + 0` → Reset zoom
+
+### Compatibility Fixes Applied
+
+- `togglesplit` bind updated to `layoutmsg, togglesplit` for Hyprland 0.54+
+- `groupbar.text_padding` enabled for cleaner grouped-window titles
+- Native scrolling still recenters on focus/click; hover-only centering is not reliable yet
+
+
 ## 🎯 Window Snapping (#2)
 **What:** Windows snap to edges and each other when dragging
 **How to Use:** Just drag floating windows near screen edges or other windows
@@ -131,6 +161,11 @@ hyprctl reload
 **Check for errors:**
 ```bash
 hyprctl configerrors
+```
+
+**Check current layout:**
+```bash
+hyprctl getoption general:layout
 ```
 
 ---

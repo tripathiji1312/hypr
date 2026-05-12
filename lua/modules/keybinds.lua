@@ -1,3 +1,8 @@
+local M = {}
+
+M.name = "keybinds"
+
+local raw = [=[
 # See https://wiki.hyprland.org/Configuring/Keywords/
 $mainMod = SUPER # Sets "Windows" key as main modifier
 
@@ -287,29 +292,29 @@ submap = resize
     binde = , l, resizeactive, 40 0
     binde = , k, resizeactive, 0 -40
     binde = , j, resizeactive, 0 40
-    
+
     # Arrow keys
     binde = , left, resizeactive, -40 0
     binde = , right, resizeactive, 40 0
     binde = , up, resizeactive, 0 -40
     binde = , down, resizeactive, 0 40
-    
+
     # Fine control with Shift
     binde = SHIFT, h, resizeactive, -10 0
     binde = SHIFT, l, resizeactive, 10 0
     binde = SHIFT, k, resizeactive, 0 -10
     binde = SHIFT, j, resizeactive, 0 10
-    
+
     # Preset sizes
     bind = , 1, resizeactive, exact 800 600
     bind = , 2, resizeactive, exact 1280 720
     bind = , 3, resizeactive, exact 1920 1080
     bind = , 4, resizeactive, exact 50% 50%
     bind = , 5, resizeactive, exact 100% 100%
-    
+
     # Center after resize
     bind = , c, centerwindow
-    
+
     # Exit resize mode
     bind = , escape, submap, reset
     bind = , return, submap, reset
@@ -340,3 +345,11 @@ bind = $mainMod CTRL, D, exec, kitty --title "All Windows" -e bash -c "hyprctl c
 
 # Super + K: Show Keybind Reference (Beautiful searchable guide)
 bind = $mainMod, K, exec, ~/.config/hypr/scripts/keybind_viewer.sh
+]=]
+
+M.lines = {}
+for line in (raw .. "\n"):gmatch("(.-)\n") do
+    table.insert(M.lines, line)
+end
+
+return M

@@ -150,6 +150,10 @@ Press **`Super + K`** to open the interactive keybind viewer!
 | `Super + F` | Toggle fullscreen |
 | `Super + I` | Pin window (always on top) |
 | `Super + K` | **Keybind viewer** |
+| `Super + Ctrl + .` | Toggle `dwindle` / `scrolling` layout |
+| `Super + Ctrl + P` | Promote active window to a new scrolling column |
+| `Super + Ctrl + G / Shift + G` | Stack active window left / right in scrolling layout |
+| `Super + Ctrl + = / - / 0` | Cursor zoom controls |
 
 ---
 

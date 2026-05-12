@@ -77,6 +77,8 @@ hyprctl reload
 | `Super + W` | Change wallpaper |
 | `Super + S` | Scratchpad terminal |
 | `Super + Q` | Close window |
+| `Super + Ctrl + .` | Toggle scrolling layout |
+| `Super + Ctrl + = / - / 0` | Cursor zoom in / out / reset |
 
 **Full keybind list**: Press `Super + K` or see [`docs/KEYBIND_CONFLICT_RESOLUTION.md`](./docs/KEYBIND_CONFLICT_RESOLUTION.md)
 

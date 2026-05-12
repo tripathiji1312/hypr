@@ -10,9 +10,11 @@ KEYBINDS=$(cat << 'EOF'
 Super (alone)          → Wofi App Launcher
 Super + Return         → Terminal (Kitty)
 Super + E              → File Manager (Thunar)
-Super + B              → Browser (Zen)
+Super + B              → Browser (Vivaldi)
 Super + C              → VS Code
-Super + D              → Discord
+Super + D              → Control Center (Quickshell)
+Super + N              → Network Menu
+Super + H              → Clipboard History
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     🪟 WINDOW MANAGEMENT
@@ -27,17 +29,16 @@ Super + J              → Toggle Split Direction
 Super + T              → Center Floating Window
 Super + I              → Pin Window (Always on Top)
 Super + O              → Toggle Window Opacity
-Super + P              → Restart Waybar
+Super + Shift + O      → Open Opacity Picker
+Super + P              → Restart Quickshell
 Super + G              → Toggle Window Group
 Super + [ / ]          → Navigate Group Windows
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     🖱️ WINDOW FOCUS & MOVEMENT
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Super + ← ↓ ↑ →        → Move Focus (Arrow Keys)
-Super + H J K L        → Move Focus (Vim Keys)
-Super + Shift + ← ↓ ↑ → → Swap Windows (Arrow Keys)
-Super + Shift + H J K L → Swap Windows (Vim Keys)
+Super + ← ↓ ↑ →        → Move Focus
+Super + Shift + ← ↓ ↑ → Swap Windows
 Super + Ctrl + ← ↓ ↑ → → Resize Windows (Arrow Keys)
 Super + Mouse Left     → Move Window (Drag)
 Super + Mouse Right    → Resize Window (Drag)
@@ -60,21 +61,24 @@ Super + Mouse Scroll   → Cycle Through Workspaces
     📦 SCRATCHPAD & SPECIAL WORKSPACES
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Super + S              → Toggle Scratchpad Terminal
-Super + Shift + M      → Toggle Music Player (special:music)
-Super + Shift + E      → Toggle Email Client (special:email)
+Super + Shift + S      → Send Window to Scratchpad Terminal
+Super + Shift + M      → Toggle Music Scratchpad
+Super + Ctrl + Shift + M → Send Window to Music Scratchpad
+Super + Shift + E      → Toggle Files Scratchpad
+Super + Ctrl + Shift + E → Send Window to Files Scratchpad
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     📸 SCREENSHOTS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Print                  → Screenshot (Select Area)
-Shift + Print          → Screenshot (Full Screen)
-Ctrl + Print           → Screenshot (Active Window)
-Alt + Print            → Screenshot with OCR (Text Extract)
+Print                  → Screenshot Menu
+Shift + Print          → Capture Region to Clipboard
+Ctrl + Print           → Capture Active Window to Clipboard
+Alt + Print            → Delayed Screenshot (5s)
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     📋 CLIPBOARD & HISTORY
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Super + H              → Show Clipboard History (Wofi)
+Super + H              → Show Clipboard History
 Super + Shift + H      → Clear Clipboard History
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -97,6 +101,27 @@ Super + Alt + I        → PiP Window Info (Debug)
     🎨 THEME & WALLPAPER
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Super + W              → Change Wallpaper (Random)
+Super + Shift + C      → Fix Cursor Theme
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    🆕 HYPRLAND 0.54 FEATURES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Super + Ctrl + .       → Toggle Dwindle / Scrolling Layout
+Super + Alt + , / .    → Scroll Layout Left / Right Column
+Super + Alt + Shift + , / . → Swap Column Left / Right
+Super + Alt + - / =    → Resize Active Scroll Column
+Super + Alt + /        → Toggle Scroll Fit Mode
+Super + Ctrl + P       → Promote Window to Its Own Scroll Column
+Super + Ctrl + G       → Stack Window into Column on the Left
+Super + Ctrl + Shift + G → Stack Window into Column on the Right
+Super + Alt + Shift + Return → Promote Window to New Column
+Super + Ctrl + Alt + / → Fit Scrolling Layout to Active Column
+Super + Ctrl + Alt + \ → Fit Scrolling Layout to All Columns
+Super + Ctrl + =       → Cursor Zoom In
+Super + Ctrl + -       → Cursor Zoom Out
+Super + Ctrl + 0       → Reset Cursor Zoom
+4-Finger Pinch         → Cursor Zoom Gesture In / Out
+Note                   → Native scrolling centers on focus/click, not hover-only
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     🔧 RESIZE MODE (Super + R to Enter)
@@ -111,8 +136,7 @@ Super + R              → Enter Resize Mode
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Super + M              → Power Menu (Lock/Logout/Shutdown)
 Super + L              → Lock Screen
-Super + Alt + R        → Reload Hyprland Config
-Super + Escape         → Exit Hyprland
+Super + Escape         → Reload Hyprland Config
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     ℹ️ HELP & DEBUGGING
@@ -120,7 +144,6 @@ Super + Escape         → Exit Hyprland
 Super + K              → This Keybind Viewer
 Super + Shift + D      → Inspect Window (Class/Title)
 Super + Ctrl + D       → Show All Window Classes
-Super + Shift + X      → Find Window Class (Debug Tool)
 EOF
 )
 
