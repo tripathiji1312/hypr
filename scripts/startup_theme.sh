@@ -1,23 +1,15 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
 # --- Startup Script ---
-# Sets wallpaper, generates Pywal colors, and then fixes the GTK theme.
+# Restores the last wallpaper if available, otherwise picks a random one,
+# then generates Pywal colors and fixes the GTK theme.
 
-WALLPAPER_DIR="/home/tripathiji/.config/hypr/wallpaper"
+WALLPAPER_HELPER="$HOME/.config/hypr/scripts/wallpaper_sync.sh"
 
-# Start the swww daemon if it's not running
-if ! pgrep -x swww-daemon > /dev/null; then
-    swww-daemon &
-    sleep 1
-fi
+NEW_WALLPAPER="$($WALLPAPER_HELPER)"
 
-# Find and set a random wallpaper
-NEW_WALLPAPER=$(find "$WALLPAPER_DIR" -type f | shuf -n 1)
-
-if [ -n "$NEW_WALLPAPER" ]; then
-    # Set the wallpaper visually
-    swww img "$NEW_WALLPAPER" --transition-type any
-
+if [[ -n "$NEW_WALLPAPER" ]]; then
     # Generate Pywal colors for terminal, bars, etc.
     # The -n flag skips an internal wallpaper set, -q makes it quiet.
     wal -i "$NEW_WALLPAPER" -q -n

@@ -27,6 +27,21 @@ bind = $mainMod SHIFT, E, togglespecialworkspace, files
 bind = $mainMod CTRL SHIFT, E, movetoworkspace, special:files
 
 # =======================================================================================
+# | SCRATCHPAD MOVEMENT (Move windows to workspaces with auto-close)                   |
+# =======================================================================================
+
+# Super + Ctrl + [1-9]: Move active window to workspace + close scratchpad
+bind = $mainMod CTRL, 1, exec, ~/.config/hypr/scripts/toggle_scratchpad.sh move 1
+bind = $mainMod CTRL, 2, exec, ~/.config/hypr/scripts/toggle_scratchpad.sh move 2
+bind = $mainMod CTRL, 3, exec, ~/.config/hypr/scripts/toggle_scratchpad.sh move 3
+bind = $mainMod CTRL, 4, exec, ~/.config/hypr/scripts/toggle_scratchpad.sh move 4
+bind = $mainMod CTRL, 5, exec, ~/.config/hypr/scripts/toggle_scratchpad.sh move 5
+bind = $mainMod CTRL, 6, exec, ~/.config/hypr/scripts/toggle_scratchpad.sh move 6
+bind = $mainMod CTRL, 7, exec, ~/.config/hypr/scripts/toggle_scratchpad.sh move 7
+bind = $mainMod CTRL, 8, exec, ~/.config/hypr/scripts/toggle_scratchpad.sh move 8
+bind = $mainMod CTRL, 9, exec, ~/.config/hypr/scripts/toggle_scratchpad.sh move 9
+
+# =======================================================================================
 # | WINDOW GROUPS                                                                      |
 # =======================================================================================
 

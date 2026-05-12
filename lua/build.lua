@@ -6,7 +6,10 @@ local modules = {
   "animations",
   "autostart",
   "window",
+  "helpers",
   "keybinds",
+  "events",
+  "monitor_hotplug",
 }
 
 local function read_module(name)
