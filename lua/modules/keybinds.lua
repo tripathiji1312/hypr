@@ -66,6 +66,17 @@ bind = $mainMod, N, exec, ~/.config/hypr/scripts/wofi_network.sh
 bind = $mainMod SHIFT, C, exec, ~/.config/hypr/scripts/fix_cursor.sh
 
 # =======================================================================================
+# | DYNAMIC CONFIG TOGGLES (Hyprland 0.55+)                                            |
+# =======================================================================================
+
+# Super + Shift + G: Toggle gaps (Focus Mode)
+bind = $mainMod SHIFT, G, exec, hyprctl eval 'local gaps = hl.get_config("general.gaps_in"); if gaps.top == 0 then hl.config({ general = { gaps_in = 4, gaps_out = 8 } }); hl.notification.create({ text = "🔲 Gaps ON", duration = 2000, icon = "ok" }) else hl.config({ general = { gaps_in = 0, gaps_out = 0 } }); hl.notification.create({ text = "⬛ Gaps OFF (Focus Mode)", duration = 2000, icon = "ok" }) end'
+
+# Super + Shift + B: Toggle blur
+bind = $mainMod SHIFT, B, exec, hyprctl eval 'local blur = hl.get_config("decoration.blur.enabled"); hl.config({ decoration = { blur = { enabled = not blur } } }); local state = blur and "OFF ⚡" or "ON ✨"; hl.notification.create({ text = "Blur " .. state, duration = 2000, icon = "info" })'
+
+
+# =======================================================================================
 # | CLIPBOARD MANAGER                                                                  |
 # =======================================================================================
 
@@ -244,6 +255,10 @@ bind = $mainMod ALT, left, workspace, e-1
 # Super + Mouse Wheel: Scroll through workspaces
 bind = $mainMod, mouse_down, workspace, e+1
 bind = $mainMod, mouse_up, workspace, e-1
+
+# Super + Grave (~): Toggle Hyprexpo Workspace Overview [DISABLED: Install plugin first]
+# bind = $mainMod, grave, hyprexpo:expo, toggle
+
 
 # =======================================================================================
 # | FOCUS AND MOVEMENT                                                                 |

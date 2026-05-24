@@ -15,6 +15,7 @@ M.lines = {
     "exec-once = ~/.config/hypr/scripts/startup_theme.sh",
     "exec-once = ~/.config/dunst/battery_notification.sh",
     "exec-once = sleep 2 && hyprctl setcursor Bibata-Modern-Ice 24",
+    "exec-once = hyprpm reload",
 }
 
 return M
