@@ -2,22 +2,16 @@ local M = {}
 
 M.name = "events"
 
--- Lua event handlers for dynamic workspace behavior
--- These are Lua code blocks that run at runtime via Hyprland's Lua scripting API
--- Feature: Auto-close special workspace when switching workspaces
--- Reference: Reddit pattern from shved03 (5 upvotes)
-
 M.lines = {
-    "",
     "# =======================================================================================",
     "# | LUA EVENT HANDLERS - RUNTIME BEHAVIOR                                              |",
     "# =======================================================================================",
     "# These handlers provide dynamic workspace management using Hyprland 0.55+ Lua API",
-    "# The following Lua code runs at runtime and responds to workspace changes",
-    "#",
-    "# Auto-close special workspace (scratchpad) when changing workspaces",
-    "# This prevents the scratchpad from staying open when you switch focus",
     "",
+    "exec-once = hyprctl eval 'hl.on(\"workspace.active\", function(ws) local special = hl.get_active_special_workspace(); if special ~= nil then hl.dispatch(hl.dsp.focus({ workspace = \"special:\" .. special.name })) end end)'",
+    "exec-once = hyprctl eval 'hl.on(\"monitor.added\", function(m) hl.notification.create({ text = \"📺 Monitor connected: \" .. m.name, duration = 5000, icon = \"ok\" }); if m.name ~= \"eDP-1\" then hl.exec_cmd(\"hyprctl keyword monitor eDP-1,disabled\") end end)'",
+    "exec-once = hyprctl eval 'hl.on(\"monitor.removed\", function(m) hl.notification.create({ text = \"📺 Monitor disconnected: \" .. m.name, duration = 5000, icon = \"warning\" }); if m.name ~= \"eDP-1\" then hl.exec_cmd(\"hyprctl keyword monitor eDP-1,preferred,auto,1\") end end)'",
+    "exec-once = hyprctl eval 'local workspace_names = { [1] = \"🏠 Main\", [2] = \"💻 Code\", [3] = \"🌐 Browser\", [4] = \"💬 Chat\", [5] = \"🎵 Media\" }; hl.on(\"workspace.active\", function(ws) local name = workspace_names[ws.id] or (\"Workspace \" .. ws.id); hl.notification.create({ text = name, duration = 1500, icon = \"info\" }) end)'",
 }
 
 return M
