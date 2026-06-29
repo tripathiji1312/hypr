@@ -34,7 +34,7 @@ windowrule = match:float true, opacity 0.92 override 0.86 override
 
 # --- Browser Opacity Override: Prevent transparency glitches in browsers
 # CRITICAL: Chromium-based browsers can render with unintended transparency
-windowrule = match:class ^(vivaldi-stable|brave-browser|Google-chrome|firefox|zen-browser)$, opacity 1.0 override
+windowrule = match:class ^(vivaldi-stable|brave-browser|Google-chrome|firefox|zen-browser|helium)$, opacity 1.0 override
 
 # --- Centering: Auto-center floating windows, except JetBrains (PyCharm/IntelliJ)
 # JetBrains XWayland uses transient "winNNN" popups (context menus, right-click menus).
